@@ -1,0 +1,145 @@
+﻿
+@{
+    ViewData["Title"] = "ViewBookings";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2 class="text-white">My Bookings</h2>
+        </div>
+        @*<div class="col-6 text-end">
+            <a asp-controller="Admin" asp-action="AddNewCar" class="btn btn-success"> Add New Car </a>
+        </div>*@
+    </div>
+</div>
+
+<br /> <br />
+
+<div class="row">
+
+    <div class="col-md-12">
+
+        <table class="table table-bordered table-hover text-white">
+
+            <tr>
+
+                <th>Brand</th>
+                <th>Model Name</th>
+                <th>Category</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Total Price</th>
+
+                <th>Actions</th>
+
+            </tr>
+
+            <tbody class="tbody" id="tbody"></tbody>
+
+        </table>
+    </div>
+</div>
+
+<script>
+    //window.onload = function(){
+
+        
+    //    setTimeout(GetRentalData(userID), 10000)
+    //};
+    var userID=localStorage.getItem("user");
+    $(document).ready(function () {
+        
+        GetRentalData(userID)
+    });
+    
+
+    function GetRentalData(userID) {
+
+        $.ajax({
+            url: 'http://localhost:51524/api/GetRentalData?id='+userID,
+            type: 'GET',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (res) {
+                $('#tbody').html(''); var html = "";
+
+                $.each(res, function (index, item) { 
+                    
+                    html += '<tr>';
+
+                    html += '<td>' + item.car.Brand + '</td>';
+                    html += '<td>' + item.car.ModelName + '</td>';
+                    html += '<td>' + item.car.CategoryName + '</td>';
+                    html += '<td>' + item.rental.StartDateTime + '</td>';
+                    html += '<td>' + item.rental.EndDateTime + '</td>';
+                    html += '<td>&#8377;' + item.rental.Price + '/-</td>';
+                   if(item.rental.BookingStatus == "Active"){
+                       var eURL = "ReturnCar?id="+ item.rental.CarID;
+                    html += '<td><button type="button" onclick=ReturnCar('+item.rental.CarID+','+item.rental.ID+') class="btn btn-sm btn-info">Return Car</button></td>';
+                   }
+                   else{
+                    html += '<td><button type="button" class="btn btn-sm btn-danger" disabled>Booking Over</button></td>';
+                   }
+                    
+
+                    html += '</tr>';
+
+                });
+
+                $('.tbody').append(html);
+
+            },
+
+            error: function (err) {
+
+                console.log(err);
+
+            }
+
+        });
+
+    }
+
+    function GetCarData(getId) {
+            $.ajax({
+            type: "GET",
+            url: "http://localhost:51524/api/GetCarData?id="+getId,
+            //data: JSON.stringify(profileDetails),
+            dataType: "json",
+            contentType: "application/json",
+            success: function (data) {
+                sessionStorage.setItem("cBrand",data.Brand);
+                sessionStorage.setItem("cModel",data.ModelName);
+                sessionStorage.setItem("cCategory",data.CategoryName);
+            },
+            error: function () { alert('error fetching data') }
+            });
+            };
+
+
+    function ReturnCar(carID,rentalID){
+        if(confirm("Are you sure?")){
+        $.ajax({
+            type: "POST",
+            url: "http://localhost:51524/api/ReturnCar?CarID="+carID+"&RentalID="+rentalID,
+            //data: JSON.stringify(profileDetails),
+            dataType: "json",
+            contentType: "application/json",
+            success: function (data) {
+                
+                window.location.replace("https://localhost:7093/User/ViewCars");
+
+            },
+            error: function () { alert('error fetching data') }
+            });
+            alert("Car Returned");
+            }
+            else{
+                alert("Car not returned");
+            }
+    }
+
+    
+</script>

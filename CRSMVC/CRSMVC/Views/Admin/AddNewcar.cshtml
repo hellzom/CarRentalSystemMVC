@@ -1,0 +1,149 @@
+﻿
+@{
+    ViewData["Title"] = "AddNewcar";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-7 mx-auto">
+            <div class="card">
+                <div class="card-header text-center bg-info text-white lead">Add New car</div>
+                <div class="card-body p-5">
+                    <div id="" class="form-text mb-3"><span class="text-danger">&#42; Required fields</span></div>
+                    <form  method="post">
+                        
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label for="Brand" class="form-label text-black">Brand <span class="text-danger">&#42;</span></label>
+                                    <input type="text" class="form-control" id="Brand" name="brand">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3">
+                                   <label for="ModelName" class="form-label text-black">Model Name <span class="text-danger">&#42;</span></label>
+                                    <input type="text" class="form-control" id="ModelName" name="ModelName">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label for="Category" class="form-label text-black">Category <span class="text-danger">&#42;</span></label>
+                                    <select class="form-control" id="CategoryName">
+                                        <option selected disabled>--Select--</option>
+                                        <option value="SUV">SUV</option>
+                                        <option value="Sedan">Sedan</option>
+                                        <option value="Mini">Mini</option>
+                                        <option value="Micro">Micro</option>
+                                        <option value="Jeep">Jeep</option>
+                                        <option value="OpenRoof">Open Roof</option>
+                                        <option value="XL">XL</option>
+                                        <option value="Tourister">Tourister</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3">
+                                   <label for="SeatingCapacity" class="form-label text-black">Seating Capacity <span class="text-danger">&#42;</span></label>
+                                    <input type="number" class="form-control" id="SeatingCapacity" name="SeatingCapacity">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label for="FuelType" class="form-label text-black">FuelType <span class="text-danger">&#42;</span></label>
+                                    <select class="form-control" id="FuelType">
+                                        <option selected disabled>--Select--</option>
+                                        <option value="Petrol">Petrol</option>
+                                        <option value="Diesel">Diesel</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3">
+                                   <label for="CarStatus" class="form-label text-black">Car Status <span class="text-danger">&#42;</span></label>
+                                    <select class="form-control" id="CarStatus">
+                                        <option selected disabled>--Select--</option>
+                                        <option value="Available">Available</option>
+                                        <option value="Rented">Rented</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                                   <label for="CarPricePerHour" class="form-label text-black">Car Price Per Hour <span class="text-danger">&#42;</span></label>
+                                    <input type="number" class="form-control" id="CarPricePerHour" placeholder="&#x20B9;" name="CarPricePerHour">
+                                </div>
+                        
+                        <button type="button" id="AddNewCarbtn" class="btn btn-info form-control">ADD</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script type="text/javascript">
+    $("body").on("click", "#AddNewCarbtn", function () {
+       if ($("#Brand").val()==null || $("#Brand").val()==""){  
+              alert("Brand can't be blank");  
+            }
+            else if ($("#ModelName").val()==null || $("#ModelName").val()==""){  
+              alert("ModelName can't be blank");  
+            }
+            else if ($("#CategoryName").val()==null || $("#CategoryName").val()==""){  
+              alert("CategoryName can't be blank");  
+            }
+            else if ($("#SeatingCapacity").val()==null || $("#SeatingCapacity").val()==""){  
+              alert("SeatingCapacity can't be blank");  
+            }
+            else if ($("#CarStatus").val()==null || $("#CarStatus").val()==""){  
+              alert("CarStatus can't be blank");  
+            }
+            else if ($("#FuelType").val()==null || $("#FuelType").val()==""){  
+              alert("FuelType can't be blank");  
+            }
+            else if ($("#CarPricePerHour").val()==null || $("#CarPricePerHour").val()==""){  
+              alert("CarPricePerHour can't be blank");  
+            }
+      
+            else{
+            var Details = {Brand: $("#Brand").val()  , ModelName:   $("#ModelName").val()  , CategoryName:$("#CategoryName").val(),SeatingCapacity: $("#SeatingCapacity").val() ,CarStatus: $("#CarStatus").val(),FuelType: $("#FuelType").val(),CarPricePerHour: $("#CarPricePerHour").val()};
+        $.ajax({
+           
+                type: "POST",
+                url: "http://localhost:51524/api/CreateCar",
+
+                data: JSON.stringify(Details),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    var result = JSON.stringify(response)
+                    if (result == 1) {
+                        alert("Car Added Successfully ");
+                    }},
+            failure: function (response) {
+               
+                    alert("failure"+response.responseText);
+                },
+                error: function (response) {
+                    alert("error"+response.responseText);
+                }
+        });
+        alert("New car Added");
+        window.location.replace("https://localhost:7093/Admin/ManageCars");
+        }
+        });
+    
+</script>
+
+
+

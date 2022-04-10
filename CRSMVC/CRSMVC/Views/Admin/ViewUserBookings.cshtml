@@ -1,0 +1,114 @@
+﻿
+@{
+    ViewData["Title"] = "ViewUserBookings";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2 class="text-white" id="pageHeader">USER BOOKING</h2>
+        </div>
+        @*<div class="col-6 text-end">
+            <a asp-controller="Admin" asp-action="AddNewCar" class="btn btn-success"> Add New Car </a>
+        </div>*@
+    </div>
+</div>
+
+<br /> <br />
+
+<div class="row">
+
+    <div class="col-md-12">
+
+        <table class="table table-bordered table-hover text-white">
+
+            <tr>
+
+                <th style="width:30%">User Name/Email</th>
+                <th style="width:25%">User Details</th>
+                <th>Vehicle</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Total Price</th>
+
+                <th>Status</th>
+
+            </tr>
+
+            <tbody class="tbody" id="tbody"></tbody>
+
+        </table>
+    </div>
+</div>
+
+<script>
+    //window.onload = function(){
+
+        
+    //    setTimeout(GetRentalData(userID), 10000)
+    //};
+    var url_string = window.location.href; //window.location.href
+    var url = new URL(url_string);
+    var getId = url.searchParams.get("id");
+    var userID=localStorage.getItem("user");
+    $(document).ready(function () {
+        
+        GetUserRentalData(getId)
+    });
+    
+
+    function GetUserRentalData(getId) {
+
+        $.ajax({
+            url: 'http://localhost:51524/api/GetUserRentalDataAdmin?id='+getId,
+            type: 'GET',
+            dataType: "json",
+            contentType: "application/json",
+            success: function (res) {
+                $('#tbody').html(''); var html = "";
+
+                $.each(res, function (index, item) { 
+                    
+                    html += '<tr>';
+
+                    html += '<td>' + item.customer.UserName +'</br> Email -'+ item.customer.Email+'</td>';
+                    html += '<td>Ph No.-' + item.customer.PhoneNumber +'</br>Lsn No.-'+ item.customer.LicenseNumber+'</td>';
+                    html += '<td>' + item.car.Brand +'</br>'+ item.car.ModelName+'</br>'+ item.car.CategoryName+'</td>';
+                    html += '<td>' + item.rental.StartDateTime + '</td>';
+                    html += '<td>' + item.rental.EndDateTime + '</td>';
+                    html += '<td>&#8377;' + item.rental.Price + '/-</td>';
+                   if(item.rental.BookingStatus == "Active"){
+                       var eURL = "ReturnCar?id="+ item.rental.CarID;
+                    html += '<td><button type="button" class="btn btn-sm btn-info" disabled>Active</button></td>';
+                   }
+                   else{
+                    html += '<td><button type="button" class="btn btn-sm btn-danger" disabled>Over</button></td>';
+                   }
+                    
+
+                    html += '</tr>';
+
+                });
+
+                $('.tbody').append(html);
+
+            },
+
+            error: function (err) {
+
+                console.log(err);
+
+            }
+
+        });
+
+    }
+
+  
+ 
+
+    
+</script>
+

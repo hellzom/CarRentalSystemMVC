@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.1778
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DALSprint2", "DALSprint2\DALSprint2.csproj", "{B3426D5F-D94D-45F0-A61B-787C17D3DE6C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiSprint2", "WebApiSprint2\WebApiSprint2.csproj", "{BA5F99A7-2438-4BF7-BB5C-015833028A8C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B3426D5F-D94D-45F0-A61B-787C17D3DE6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3426D5F-D94D-45F0-A61B-787C17D3DE6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3426D5F-D94D-45F0-A61B-787C17D3DE6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3426D5F-D94D-45F0-A61B-787C17D3DE6C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA5F99A7-2438-4BF7-BB5C-015833028A8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA5F99A7-2438-4BF7-BB5C-015833028A8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA5F99A7-2438-4BF7-BB5C-015833028A8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA5F99A7-2438-4BF7-BB5C-015833028A8C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {47FD5B7A-843C-464C-BE36-5BC3521CABD4}
+	EndGlobalSection
+EndGlobal

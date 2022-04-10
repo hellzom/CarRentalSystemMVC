@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="Models" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Car">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Brand" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="ModelName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="CategoryName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="SeatingCapacity" Type="Int32" />
+    <Property Name="CarStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="FuelType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="CarPricePerHour" Type="Double" />
+    <NavigationProperty Name="Rentals" Relationship="Self.fk_carID" FromRole="Cars" ToRole="Rental" />
+  </EntityType>
+  <EntityType Name="Customer">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="LicenseNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="UserPassword" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="PhoneNumber" Type="Int64" />
+    <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="Rentals" Relationship="Self.fk_userID" FromRole="Customers" ToRole="Rental" />
+  </EntityType>
+  <EntityType Name="Rental">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CarID" Type="Int32" />
+    <Property Name="UserID" Type="Int32" />
+    <Property Name="StartDateTime" Type="DateTime" Precision="3" />
+    <Property Name="EndDateTime" Type="DateTime" Precision="3" />
+    <Property Name="Price" Type="Double" />
+    <NavigationProperty Name="Car" Relationship="Self.fk_carID" FromRole="Rental" ToRole="Cars" />
+    <NavigationProperty Name="Customer" Relationship="Self.fk_userID" FromRole="Rental" ToRole="Customers" />
+  </EntityType>
+  <Association Name="fk_carID">
+    <End Role="Cars" Type="Self.Car" Multiplicity="0..1" />
+    <End Role="Rental" Type="Self.Rental" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Cars">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Rental">
+        <PropertyRef Name="CarID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_userID">
+    <End Role="Customers" Type="Self.Customer" Multiplicity="0..1" />
+    <End Role="Rental" Type="Self.Rental" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Customers">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Rental">
+        <PropertyRef Name="UserID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="DBEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Cars" EntityType="Self.Car" />
+    <EntitySet Name="Customers" EntityType="Self.Customer" />
+    <EntitySet Name="Rentals" EntityType="Self.Rental" />
+    <AssociationSet Name="fk_carID" Association="Self.fk_carID">
+      <End Role="Cars" EntitySet="Cars" />
+      <End Role="Rental" EntitySet="Rentals" />
+    </AssociationSet>
+    <AssociationSet Name="fk_userID" Association="Self.fk_userID">
+      <End Role="Customers" EntitySet="Customers" />
+      <End Role="Rental" EntitySet="Rentals" />
+    </AssociationSet>
+    <EntitySet Name="AdminRecords" EntityType="Models.AdminRecord" />
+  </EntityContainer>
+  <EntityType Name="AdminRecord">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Username" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Pass" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+  </EntityType>
+</Schema>

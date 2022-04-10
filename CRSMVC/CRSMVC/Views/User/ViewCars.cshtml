@@ -1,0 +1,97 @@
+﻿
+@{
+    ViewData["Title"] = "ViewCars";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2 class="text-white">All Car List</h2>
+        </div>
+        @*<div class="col-6 text-end">
+            <a asp-controller="Admin" asp-action="AddNewCar" class="btn btn-success"> Add New Car </a>
+        </div>*@
+    </div>
+</div>
+
+<br /> <br />
+
+<div class="row">
+
+    <div class="col-md-12">
+
+        <table class="table table-bordered table-hover text-white">
+
+            <tr>
+
+                <th>Brand</th>
+                <th>Model Name</th>
+                <th>Category</th>
+                <th>SeatingCapacity</th>
+                <th>Fuel Type</th>
+                <th>Price/Hr</th>
+                <th>Status</th>
+
+                <th>Actions</th>
+
+            </tr>
+
+            <tbody class="tbody" id="tbody"></tbody>
+
+        </table>
+    </div>
+</div>
+
+<script>
+   
+    $(document).ready(function () {
+        GetAllData()
+    });
+
+    function GetAllData() {
+
+        $.ajax({
+            url: 'http://localhost:51524/api/GetCarData',
+            type: 'GET',
+            success: function (res) {
+                $('#tbody').html(''); var html = "";
+
+                $.each(res, function (index, item) {
+
+                    html += '<tr>';
+
+                    html += '<td>' + item.Brand + '</td>';
+                    html += '<td>' + item.ModelName + '</td>';
+                    html += '<td>' + item.CategoryName + '</td>';
+                    html += '<td>' + item.SeatingCapacity + '</td>';
+                    html += '<td>' + item.FuelType + '</td>';
+                    html += '<td>' + item.CarPricePerHour + '</td>';
+                    html += '<td>' + item.CarStatus + '</td>';
+                    if(item.CarStatus == "Rented"){
+                        html += '<td><button class="btn btn-sm btn-danger" disabled>Not Available</button></td>';
+                    }
+                    else{
+                         var eURL = "BookCar?id="+ item.ID;
+                        html += '<td><a href="'+eURL+'" class="btn btn-sm btn-success">Book Now</a></td>';
+                    }
+                   
+
+                    html += '</tr>';
+
+                });
+
+                $('.tbody').append(html);
+
+            },
+
+            error: function (err) {
+
+                console.log(err);
+
+            }
+
+        });
+
+    }
+</script>

@@ -1,0 +1,67 @@
+﻿
+@{
+    ViewData["Title"] = "AdminLogin";
+    Layout = "~/Views/Shared/_AuthLayout.cshtml";
+}
+
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-5 mx-auto">
+            <div class="card">
+                <div class="card-header text-center bg-success text-white lead">Admin Login</div>
+                <div class="card-body p-5">
+                    <form method="post">
+                        <div class="mb-3">
+                            <label for="adminEmail" class="form-label text-black">Admin Email</label>
+                            <input type="text" class="form-control" id="adminEmail" name="adminEmail" @*aria-describedby=""*@>
+                            @*<div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>*@
+                        </div>
+                        <div class="mb-3">
+                            <label for="adminPass" class="form-label text-black">Password</label>
+                            <input type="password" class="form-control" id="adminPass" name="adminPass">
+                        </div>
+                        <button type="button" class="btn btn-success" id="adminlgnbtn">Login</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $("body").on("click", "#adminlgnbtn", function () {
+       let email1 = $("#adminEmail").val();
+            var Details = {AdminEmail: $("#adminEmail").val()  , Pass:   $("#adminPass").val()};
+        $.ajax({
+           
+                type: "POST",
+                url: "http://localhost:51524/api/AdminLogin",
+
+                data: JSON.stringify(Details),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    //var result = JSON.stringify(response);
+                    if(response == 0)
+                    {
+                        alert("Wrong credentials");
+
+                    }
+                    else{
+                        sessionStorage.setItem('adminEmail',email1);
+                        alert("Logged In Successfully ");
+                        
+                        window.location.replace("https://localhost:7093/Admin");
+                    }
+                    
+                },
+                error: function (response) {
+                    alert("error"+response.responseText);
+                }
+          });
+        });
+    
+</script>
+
+

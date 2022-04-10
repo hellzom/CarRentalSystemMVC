@@ -1,0 +1,145 @@
+﻿
+@{
+    ViewData["Title"] = "BookCar";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-7 mx-auto">
+            <div class="card">
+                <div class="card-header text-center bg-success text-white lead" id="cardheader">Continue with your booking</div>
+                <div class="card-body p-5">
+                    <form  method="post">
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="mb-3">
+                                    <label for="Brand" class="form-label text-black">Brand</label>
+                                    <input type="text" disabled class="form-control" id="Brand" name="brand">
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="mb-3">
+                                   <label for="ModelName" class="form-label text-black">Model Name</label>
+                                    <input type="text" disabled class="form-control" id="ModelName" name="ModelName">
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="mb-3">
+                                   <label for="PricePerHour" class="form-label text-black">Price/Hr</label>
+                                    <input type="text" disabled class="form-control" id="PricePerHour" name="PricePerHour">
+                                </div>
+                            </div>
+                        </div>
+                       <div class="row">
+                           <div class="col-6">
+                                <div class="mb-3">
+                                    <label for="StartTime" class="form-label text-black">StartTime</label>
+                                    <input type="datetime-local" class="form-control" id="StartTime" name="StartTime">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3">
+                                   <label for="EndTime" class="form-label text-black">EndTime</label>
+                                    <input type="datetime-local" class="form-control" id="EndTime" name="EndTime">
+                                </div>
+                            </div>
+                       </div>
+                       <input type="hidden" disabled class="form-control" id="CarID" name="ModelName">
+                       
+                        
+                        <button type="button" id="BookCarBtn" class="btn btn-success form-control">Book Car</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script type="text/javascript">
+     var url_string = window.location.href; //window.location.href
+    var url = new URL(url_string);
+    var getId = url.searchParams.get("id");
+    $(document).ready(function () {
+                GetCarData(getId);
+            });
+     function GetCarData(getId) {
+
+            $.ajax({
+            type: "GET",
+            url: "http://localhost:51524/api/GetCarData?id="+getId,
+            //data: JSON.stringify(profileDetails),
+            dataType: "json",
+            contentType: "application/json",
+            success: function (data) {
+
+            $('#CarID').val(data.ID);
+            $('#Brand').val(data.Brand);
+            $('#ModelName').val(data.ModelName);
+            $('#PricePerHour').val(data.CarPricePerHour);
+            //$('#CategoryName').val(data.CategoryName);
+            //$('#SeatingCapacity').val(data.SeatingCapacity);
+            //$('#CarStatus').val(data.CarStatus);
+            //$('#FuelType').val(data.FuelType);
+            //$('#CarPricePerHour').val(data.CarPricePerHour);
+            //var div = document.getElementById('cardheader');
+            //div.innerHTML += "Edit - <b>"+ data.Brand +" "+ data.ModelName + "</b>";
+            },
+            error: function () { alert('error fetching data') }
+            });
+            };
+
+            $("body").on("click", "#BookCarBtn", function () {
+                if ($("#StartTime").val()==null || $("#StartTime").val()==""){  
+              alert("StartTime can't be blank");  
+            }
+            else if ($("#EndTime").val()==null || $("#EndTime").val()==""){  
+              alert("EndTime can't be blank");  
+            }
+            else{
+
+            
+                var st = new Date($("#StartTime").val());
+            var et = new Date($("#EndTime").val());
+
+            var diff =(et.getTime() - st.getTime()) / 1000;
+            diff /= (60 * 60);
+            diff = Math.abs(Math.round(diff));
+            var totalPrice = diff * $("#PricePerHour").val();
+            if(confirm("You are booking for "+diff+" Hrs & Total Price is  - &#x20B9;"+ totalPrice)){
+                  var Details = {CarID: $("#CarID").val()  , UserID: userID  , StartDateTime:$("#StartTime").val(),EndDateTime: $("#EndTime").val(),Price : totalPrice, BookingStatus : "Active"};
+         
+            //alert($("#CarID").val())
+            
+            $.ajax({
+            type: "POST",
+            url: "http://localhost:51524/api/BookCar?CarID="+$("#CarID").val(),
+            data: JSON.stringify(Details),
+            dataType: "json",
+            contentType: "application/json",
+            success: function (data) {
+            //alert(JSON.stringify(data))
+            var res = JSON.stringify(data);
+            window.location.replace("https://localhost:7093/User/ViewBookings");
+            if (res == 1) {
+                alert("Car Booked");
+            }
+            },
+            error: function () { alert('error updating data') }
+            });
+                alert('Booked');
+            }
+            else{
+                alert("NotBooked");
+            }
+            }
+          
+            });
+</script>
+
+
+
+

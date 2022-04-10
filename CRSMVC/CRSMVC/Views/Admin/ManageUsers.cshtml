@@ -1,0 +1,108 @@
+﻿
+@{
+    ViewData["Title"] = "ManageUsers";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-6">
+            <h2 class="text-white">User List</h2>
+        </div>
+        <div class="col-6 text-end">
+            <a asp-controller="Auth" asp-action="UserRegistration" class="btn btn-success"> Add New User </a>
+        </div>
+    </div>
+</div>
+
+<br /> <br />
+
+<div class="row">
+
+    <div class="col-md-12">
+
+        <table class="table table-bordered table-hover text-white">
+
+            <tr>
+
+                <th>User Name</th>
+                <th>Phone Number</th>
+                <th>License Number</th>
+                <th>Email</th>
+
+
+                <th>Actions</th>
+
+            </tr>
+
+            <tbody class="tbody" id="tbody"></tbody>
+
+        </table>
+    </div>
+</div>
+
+<script>
+
+    $(document).ready(function () {
+        GetAllData()
+    });
+
+    function GetAllData() {
+        $.ajax({
+            url: 'http://localhost:51524/api/GetCustomerData',
+            type: 'GET',
+            success: function (res) {
+                $('#tbody').html(''); var html = "";
+
+                $.each(res, function (index, item) {
+
+                    html += '<tr>';
+
+                    html += '<td>' + item.UserName + '</td>';
+                    html += '<td>' + item.PhoneNumber + '</td>';
+                    html += '<td>' + item.LicenseNumber + '</td>';
+
+                    html += '<td>' + item.Email + '</td>';
+
+                    var bURL = "ViewUserBookings?id="+ item.ID;
+                    html += '<td><a href="'+bURL+'" class="btn btn-sm btn-warning">View Bookings</a></td>';
+
+                    html += '</tr>';
+
+                });
+
+                $('.tbody').append(html);
+
+            },
+
+            error: function (err) {
+
+                console.log(err);
+
+            }
+
+        });
+
+    }
+
+    function DeleteUser(id){
+         confirm("Are you sure?");
+        $.ajax({
+            type: "POST",
+            url: "http://localhost:51524/api/DeleteUser?id="+id,
+            //data: JSON.stringify(profileDetails),
+            dataType: "json",
+            contentType: "application/json",
+
+            success: function (data) {
+                alert('User Deleted');
+                window.location.replace("https://localhost:7093/Admin/ManageUsers");
+
+            },
+            error: function () { alert('error fetching data') }
+            });
+    }
+</script>
+
+
+

@@ -1,0 +1,150 @@
+﻿
+@{
+    ViewData["Title"] = "UserProfile";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+
+
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-7 mx-auto">
+            <div class="card">
+                <div class="card-header text-center bg-info text-white lead">User Profile</div>
+                <div class="card-body p-5">
+                    <form  method="post">
+                        <div class="mb-3">
+                            <label for="userName" class="form-label text-black">UserName</label>
+                            <input type="text" class="form-control" id="userName" name="userName">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="userEmail" class="form-label text-black">Email address</label>
+                            <input type="email" class="form-control" id="userEmail" name="userEmail" disabled>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label for="userPass" class="form-label text-black">Password</label>
+                                    <input type="password" class="form-control" id="userPass" name="userPass">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label for="userConPass" class="form-label text-black">Confirm Password</label>
+                                    <input type="password" class="form-control" id="userConPass" name="userConPass">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label for="userPhoneNo" class="form-label text-black">Phone No</label>
+                                    <input type="number" class="form-control" id="userPhoneNo" name="userPHoneNo">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label for="userLicense" class="form-label text-black">License No</label>
+                                    <input type="text" class="form-control" id="userLicense" name="userLicense">
+                                </div>
+                            </div>
+                        </div>
+                       
+                        <button type="button" id="edituserbtn" class="btn btn-warning form-control">Save Edits</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script type="text/javascript">
+    var userID=localStorage.getItem("user");
+    $(document).ready(function () {
+                GetUserData(userID);
+            });
+    function GetUserData(userID) {
+
+            $.ajax({
+            type: "GET",
+            url: "http://localhost:51524/api/GetCustomerData?id="+userID,
+            //data: JSON.stringify(profileDetails),
+            dataType: "json",
+            contentType: "application/json",
+            success: function (data) {
+
+            $('#userName').val(data.UserName);
+            $('#userEmail').val(data.Email);
+            $('#userPass').val(data.UserPassword);
+            $('#userConPass').val(data.UserPassword);
+            $('#userPhoneNo').val(data.PhoneNumber);
+            $('#userLicense').val(data.LicenseNumber);
+           
+            },
+            error: function () { alert('error fetching data') }
+            });
+            };
+
+    $("body").on("click", "#edituserbtn", function () {
+       
+            var Details = {UserName: $("#userName").val()  , Email:   $("#userEmail").val()  , UserPassword:$("#userPass").val(),PhoneNumber: $("#userPhoneNo").val() ,LicenseNumber: $("#userLicense").val()};
+
+            if ($("#userName").val()==null || $("#userName").val()==""){  
+              alert("UserName can't be blank");  
+            }
+           
+            else if ($("#userPass").val()==null || $("#userPass").val()==""){  
+              alert("Password can't be blank");  
+            }
+            else if ($("#userPass").val().length<=5){  
+              alert("Password should be more than 5 chracters");  
+            }
+            else if ($("#userPhoneNo").val()==null || $("#userPhoneNo").val()==""){  
+              alert("Phone Number can't be blank");  
+            }
+            else if ($("#userPhoneNo").val().length != 10){  
+              alert("Phone number should be of 10 digits");  
+            }
+            else if ($("#userLicense").val()==null || $("#userLicense").val()==""){  
+              alert("Liscence number can't be blank");  
+            }
+            else{
+       if($("#userPass").val() == $("#userConPass").val()){
+               $.ajax({
+           
+                type: "POST",
+                url: "http://localhost:51524/api/EditCustomer?id="+userID,
+
+                data: JSON.stringify(Details),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    var result = JSON.stringify(response)
+                    
+                     window.location.replace("https://localhost:7093/User");
+                },
+            failure: function (response) {
+               
+                    alert("failure"+response.responseText);
+                },
+                error: function (response) {
+                    alert("error"+response.responseText);
+                }
+        });
+        alert("Edit Sucessful");
+        window.location.replace("https://localhost:7093/User");
+       }
+       else{
+           alert("Passwords do not match");
+       }
+        }
+        });
+    
+</script>
+
+
+
+

@@ -1,0 +1,118 @@
+﻿
+@{
+    ViewData["Title"] = "AdminProfile";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-7 mx-auto">
+            <div class="card">
+                <div class="card-header text-center bg-info text-white lead">Admin Profile</div>
+                <div class="card-body p-5">
+                    <form  method="post">
+                        <div class="mb-3">
+                            <label for="userName" class="form-label text-black">Admin Name</label>
+                            <input type="text" class="form-control" id="userName" name="userName">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="AdminEmail" class="form-label text-black">Email address</label>
+                            <input type="email" class="form-control" id="AdminEmail" name="AdminEmail" disabled>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label for="Pass" class="form-label text-black">Password</label>
+                                    <input type="password" class="form-control" id="Pass" name="Pass">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label for="ConPass" class="form-label text-black">Confirm Password</label>
+                                    <input type="password" class="form-control" id="ConPass" name="ConPass">
+                                </div>
+                            </div>
+                        </div>
+                        
+                       
+                        <button type="button" id="editadminbtn" class="btn btn-warning form-control">Save Edits</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script type="text/javascript">
+    var adminID=localStorage.getItem("adminId");
+    var adminUserName=localStorage.getItem("adminUserName");
+    var adminPass=localStorage.getItem("adminPass");
+    var adminEmail=localStorage.getItem("adminEmail");
+    $(document).ready(function () {
+                GetAdminData();
+            });
+    function GetAdminData() {
+
+           
+            $('#userName').val(adminUserName);
+            $('#AdminEmail').val(adminEmail);
+            $('#Pass').val(adminPass);
+            $('#ConPass').val(adminPass);
+           
+            
+            };
+
+    $("body").on("click", "#editadminbtn", function () {
+        if ($("#userName").val()==null || $("#userName").val()==""){  
+              alert("Admin Name can't be blank");  
+            }
+
+        else if ($("#Pass").val()==null || $("#Pass").val()==""){  
+              alert("Password Name can't be blank");  
+            }
+            else{
+
+          
+       
+            var Details = {Username: $("#userName").val()  , Email:   $("#adminEmail").val()  , Pass:$("#Pass").val()};
+       if($("#Pass").val() == $("#ConPass").val()){
+               $.ajax({
+           
+                type: "POST",
+                url: "http://localhost:51524/api/EditAdminCredentials?id="+adminID,
+
+                data: JSON.stringify(Details),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    var result = JSON.stringify(response)
+                    
+                     window.location.replace("https://localhost:7093/Admin");
+                },
+            failure: function (response) {
+               
+                    alert("failure"+response.responseText);
+                },
+                error: function (response) {
+                    alert("error"+response.responseText);
+                }
+        });
+        alert("Edit Sucessful");
+        window.location.replace("https://localhost:7093/Admin");
+       }
+       else{
+           alert("Passwords do not match");
+       }
+          }
+        });
+    
+</script>
+
+
+
+

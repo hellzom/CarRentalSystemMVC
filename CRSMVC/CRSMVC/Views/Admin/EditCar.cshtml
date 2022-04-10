@@ -1,0 +1,158 @@
+﻿
+@{
+    ViewData["Title"] = "EditCar";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container p-3">
+    <div class="row pt-4">
+        <div class="col-7 mx-auto">
+            <div class="card">
+                <div class="card-header text-center bg-warning text-black lead" id="cardheader"></div>
+                <div class="card-body p-5">
+                    <form  method="post">
+
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label for="Brand" class="form-label text-black">Brand</label>
+                                    <input type="text" class="form-control" id="Brand" name="brand">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3">
+                                   <label for="ModelName" class="form-label text-black">Model Name</label>
+                                    <input type="text" class="form-control" id="ModelName" name="ModelName">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label for="Category" class="form-label text-black">Category</label>
+                                    <select class="form-control" id="CategoryName">
+                                        <option selected disabled>--Select--</option>
+                                        <option value="SUV">SUV</option>
+                                        <option value="Sedan">Sedan</option>
+                                        <option value="Mini">Mini</option>
+                                        <option value="Micro">Micro</option>
+                                        <option value="Jeep">Jeep</option>
+                                        <option value="OpenRoof">Open Roof</option>
+                                        <option value="XL">XL</option>
+                                        <option value="Tourister">Tourister</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3">
+                                   <label for="SeatingCapacity" class="form-label text-black">Seating Capacity</label>
+                                    <input type="number" class="form-control" id="SeatingCapacity" name="SeatingCapacity">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="mb-3">
+                                    <label for="FuelType" class="form-label text-black">FuelType</label>
+                                    <select class="form-control" id="FuelType">
+                                        <option selected disabled>--Select--</option>
+                                        <option value="Petrol">Petrol</option>
+                                        <option value="Diesel">Diesel</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="mb-3">
+                                   <label for="CarStatus" class="form-label text-black">Car Status</label>
+                                    <select class="form-control" id="CarStatus">
+                                        <option selected disabled>--Select--</option>
+                                        <option value="Available">Available</option>
+                                        <option value="Rented">Rented</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                                   <label for="CarPricePerHour" class="form-label text-black">Car Price Per Hour</label>
+                                    <input type="number" class="form-control" id="CarPricePerHour" placeholder="&#x20B9;" name="CarPricePerHour">
+                                </div>
+                        
+                        <button type="button" id="EditCarbtn" class="btn btn-warning form-control">Save Edits</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script type="text/javascript">
+    var url_string = window.location.href; //window.location.href
+    var url = new URL(url_string);
+    var getId = url.searchParams.get("id");
+    $(document).ready(function () {
+                GetEditData(getId);
+            });
+     function GetEditData(getId) {
+
+            $.ajax({
+            type: "GET",
+            url: "http://localhost:51524/api/GetCarData?id="+getId,
+            //data: JSON.stringify(profileDetails),
+            dataType: "json",
+            contentType: "application/json",
+            success: function (data) {
+
+            $('#Brand').val(data.Brand);
+            $('#ModelName').val(data.ModelName);
+            $('#CategoryName').val(data.CategoryName);
+            $('#SeatingCapacity').val(data.SeatingCapacity);
+            $('#CarStatus').val(data.CarStatus);
+            $('#FuelType').val(data.FuelType);
+            $('#CarPricePerHour').val(data.CarPricePerHour);
+            var div = document.getElementById('cardheader');
+            div.innerHTML += "Edit - <b>"+ data.Brand +" "+ data.ModelName + "</b>";
+            },
+            error: function () { alert('error fetching data') }
+            });
+            };
+
+            $("body").on("click", "#EditCarbtn", function () {
+            if ($("#Brand").val()==null || $("#Brand").val()==""){  
+              alert("Brand can't be blank");  
+            }
+            else if ($("#ModelName").val()==null || $("#ModelName").val()==""){  
+              alert("ModelName can't be blank");  
+            }
+            else if ($("#CarPricePerHour").val()==null || $("#CarPricePerHour").val()==""){  
+              alert("CarPricePerHour can't be blank");  
+            }
+      
+            else{
+            var Details = {ID:getId, Brand: $("#Brand").val()  , ModelName:   $("#ModelName").val()  , CategoryName:$("#CategoryName").val(),SeatingCapacity: $("#SeatingCapacity").val() ,CarStatus: $("#CarStatus").val(),FuelType: $("#FuelType").val(),CarPricePerHour: $("#CarPricePerHour").val()};
+            
+            $.ajax({
+            type: "POST",
+            url: "http://localhost:51524/api/EditCar",
+            data: JSON.stringify(Details),
+            dataType: "json",
+            contentType: "application/json",
+            success: function (data) {
+            //alert(JSON.stringify(data))
+            var res = JSON.stringify(data);
+            
+            },
+            error: function () { alert('error updating data') }
+            });
+            alert("Edit Successful");
+            window.location.replace("https://localhost:7093/Admin/ManageCars");
+            }
+            });
+</script>
+
+
+
